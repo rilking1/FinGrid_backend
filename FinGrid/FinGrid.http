@@ -1,0 +1,6 @@
+@FinGrid_HostAddress = http://localhost:5053
+
+GET {{FinGrid_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
