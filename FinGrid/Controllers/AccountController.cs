@@ -3,6 +3,7 @@ using FinGrid.JwtFeatures;
 using FinGrid.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -140,6 +141,26 @@ namespace FinGrid.Controllers
                 });
             }
             return Ok(new { isAuthenticated = false });
+        }
+
+        [Authorize]
+        [HttpPost("toggle-bank-sync")]
+        public async Task<IActionResult> ToggleBankSync([FromBody] bool isEnabled)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return NotFound("Користувача не знайдено");
+
+            user.IsBankSyncEnabled = isEnabled;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { isBankSyncEnabled = user.IsBankSyncEnabled });
+            }
+
+            return BadRequest("Не вдалося оновити налаштування");
         }
     }
 }

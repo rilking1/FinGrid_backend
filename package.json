@@ -1,0 +1,6 @@
+{
+  "name": "fingrid-backend",
+  "scripts": {
+    "start": "dotnet run --project FinGrid"
+  }
+}
